@@ -9,7 +9,7 @@ public class NonExistantTypeException extends Exception {
         this.type = type;
     }
 
-    public string getType() {
+    public String getType() {
         return this.type;
     }
 }

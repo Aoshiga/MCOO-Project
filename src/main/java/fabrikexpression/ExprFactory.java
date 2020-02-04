@@ -4,8 +4,7 @@ import expression.Entier;
 import expression.Litteral;
 import expression.NonTerminal;
 import expression.Terminal;
-
-import java.beans.Expression;
+import expression.Expression;
 
 public class ExprFactory {
     private ExprFactory() {}

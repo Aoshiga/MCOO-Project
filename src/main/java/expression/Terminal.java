@@ -1,4 +1,4 @@
 package expression;
 
-abstract class Terminal extends Expression {
+public abstract class Terminal extends Expression {
 }

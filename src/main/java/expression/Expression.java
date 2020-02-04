@@ -1,4 +1,5 @@
 package expression;
 
-abstract class Expression {
+public abstract class Expression {
+
 }
