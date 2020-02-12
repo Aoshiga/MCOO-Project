@@ -34,7 +34,7 @@ public class ExprFactory {
         c = Class.forName("expression." + type);
         e = (NonTerminal) c.getDeclaredConstructor().newInstance();
         for (Expression child : children) {
-            e.add(child);
+            e.set(child);
         }
         return e;
     }

@@ -6,7 +6,7 @@ public abstract class NonTerminal extends Expression {
     protected ArrayList<Expression> son;
 
     public
-    void add(Expression expr){}
+    void set(Expression expr){}
     void remove(Expression expr){}
 
 }
