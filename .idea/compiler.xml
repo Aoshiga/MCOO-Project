@@ -10,5 +10,6 @@
         <module name="MCOO-Project" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="8" />
   </component>
 </project>
