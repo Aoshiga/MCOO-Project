@@ -14,7 +14,7 @@ public static void main(String [] args){
 
     Expression[] nb = new Expression[4];
     for (int i=0; i < 4; i++) {
-            nb[i] = f.makeLeaf("Number", i);
+            nb[i] = f.makeLeaf("Entier", i);
 
     };
 
@@ -24,6 +24,10 @@ public static void main(String [] args){
                 f.makeNode("QuelqueSoit", x, f.makeNode("Appartient", x, X), f.makeNode("Sup", x, nb[0]))
         );
     }catch(Exception exc){
+        exc.printStackTrace();
+
+        System.out.println(exc);
+
         System.out.println("exp");
     }
 }
