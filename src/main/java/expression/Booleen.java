@@ -11,5 +11,8 @@ public class Booleen extends Terminal {
     public boolean get() {
         return expr;
     }
+    public void afficher(String prefixe) {
+        System.out.println(prefixe + " Boolean : " + (expr ? "TRUE" : "False")) ;
 
+    }
 }

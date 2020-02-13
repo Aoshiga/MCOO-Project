@@ -16,13 +16,17 @@ public static void main(String [] args){
     for (int i=0; i < 4; i++) {
             nb[i] = f.makeLeaf("Entier", i);
 
+
     };
 
+
         Expression ens123 = f.makeNode("EnsembleEnExtension", nb[1], nb[2], nb[3]);
+
         Expression exemple1 = f.makeNode("EtLogique",
-                f.makeNode("Egalite", X, ens123),
-                f.makeNode("QuelqueSoit", x, f.makeNode("Appartient", x, X), f.makeNode("Sup", x, nb[0]))
+                f.makeNode("Egal", X, ens123),
+                f.makeNode("PourTout", x, f.makeNode("Appartient", x, X), f.makeNode("Superieur", x, nb[0]))
         );
+        exemple1.afficher("");
     }catch(Exception exc){
         exc.printStackTrace();
 

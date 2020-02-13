@@ -11,4 +11,7 @@ public class Entier extends Terminal {
         return expr;
     }
 
+    public void afficher(String prefixe) {
+        System.out.println(prefixe + "|___ Entier : " + expr);
+    }
 }

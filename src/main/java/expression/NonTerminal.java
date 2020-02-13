@@ -3,10 +3,13 @@ package expression;
 import java.util.ArrayList;
 
 public abstract class NonTerminal extends Expression {
-    protected ArrayList<Expression> son;
+    protected ArrayList<Expression> son = new ArrayList<Expression>();
 
-    public
-    void set(Expression expr){}
-    void remove(Expression expr){}
+    public void set(Expression expr){
+        son.add(expr);
+    }
+    public void remove(Expression expr){
+        son.remove(expr);
+    }
 
 }
