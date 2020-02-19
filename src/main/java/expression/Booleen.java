@@ -3,6 +3,9 @@ package expression;
 import Visitors.PrettyPrintVisitor;
 
 public class Booleen extends Terminal {
+    public void afficher(String prefixe) {
+        System.out.println(prefixe + "Boolean");
+    }
 
     private boolean expr;
 

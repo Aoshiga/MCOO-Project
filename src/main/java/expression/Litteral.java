@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 public class Litteral extends Terminal {
 
     private String expr;
@@ -14,6 +16,10 @@ public class Litteral extends Terminal {
     public void afficher(String prefixe) {
         System.out.println(prefixe + "|___ Litteral : " + expr);
 
+    }
+
+    public Object accept(PrettyPrintVisitor ppv) {
+        return expr;
     }
 
 }

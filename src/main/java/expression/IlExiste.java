@@ -10,17 +10,20 @@ public class IlExiste extends NonTerminal {
             child.afficher(prefixe+"        ");
         }
     }
-    public void accept(PrettyPrintVisitor ev) {
+
+    public Object accept(PrettyPrintVisitor ppv) {
         String [] symbols= {"∃" , "." ,"∧"};
         int counter = 0;
 
-        System.out.print("(");
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
         for (Expression child:son) {
-            System.out.print(symbols[counter]);
-            child.accept(ev);
+            sb.append(symbols[counter]);
+            sb.append(child.accept(ppv));
             counter++;
         }
-        System.out.print(")");
+        sb.append(")");
+        return sb.toString();
     }
 
 }

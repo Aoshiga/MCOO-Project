@@ -12,15 +12,17 @@ public class Inclus extends NonTerminal {
             child.afficher(prefixe+"        ");
         }
     }
-    public void accept(PrettyPrintVisitor ev) {
+
+    public Object accept(PrettyPrintVisitor ppv) {
         boolean special= false;
+        StringBuilder sb = new StringBuilder();
         for (Expression child:son) {
-            child.accept(ev);
+            sb.append(child.accept(ppv));
             if(!special) {
-                System.out.print("⊂");
+                sb.append("⊂");
                 special =true;
             }
         }
-
+        return sb.toString();
     }
 }
