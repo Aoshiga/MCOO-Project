@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 public class Entier extends Terminal {
     private int expr;
 
@@ -15,5 +17,7 @@ public class Entier extends Terminal {
         System.out.println(prefixe + "|___ Entier : " + expr);
     }
 
-
+    public Object accept(PrettyPrintVisitor ppv) {
+        return this.expr;
+    }
 }
