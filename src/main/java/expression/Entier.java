@@ -4,10 +4,6 @@ import Visitors.PrettyPrintVisitor;
 
 public class Entier extends Terminal {
 
-    public void afficher(String prefixe) {
-        System.out.println(prefixe + "Entier");
-    }
-
     private int expr;
 
    public void set(int expr){
