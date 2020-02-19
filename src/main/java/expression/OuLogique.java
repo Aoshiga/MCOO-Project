@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 import java.util.ArrayList;
 
 public class OuLogique extends NonTerminal {
@@ -9,5 +11,17 @@ public class OuLogique extends NonTerminal {
         for (Expression child:son) {
             child.afficher(prefixe+"        ");
         }
+    }
+
+    public void accept(PrettyPrintVisitor ev) {
+        boolean special= false;
+        for (Expression child:son) {
+            child.accept(ev);
+            if(!special) {
+                System.out.print("∨");
+                special =true;
+            }
+        }
+
     }
 }

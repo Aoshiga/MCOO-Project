@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 import java.util.ArrayList;
 
 public class Egal extends NonTerminal {
@@ -10,4 +12,17 @@ public class Egal extends NonTerminal {
             child.afficher(prefixe+ "       ");
         }
     }
+
+    public void accept(PrettyPrintVisitor ev) {
+        boolean special= false;
+        for (Expression child:son) {
+            child.accept(ev);
+            if(!special) {
+                System.out.print("=");
+                special =true;
+            }
+        }
+
+    }
+}
 }

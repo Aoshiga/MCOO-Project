@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 import java.util.ArrayList;
 
 public class Card extends NonTerminal {
@@ -11,4 +13,14 @@ public class Card extends NonTerminal {
             }
 
     }
+    public Object accept(PrettyPrintVisitor ev) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("card(");
+        for (Expression child:son) {
+            sb.append(child.accept(ev));
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
 }

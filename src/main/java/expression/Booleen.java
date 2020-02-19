@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 public class Booleen extends Terminal {
 
     private boolean expr;
@@ -14,5 +16,9 @@ public class Booleen extends Terminal {
     public void afficher(String prefixe) {
         System.out.println(prefixe + " Boolean : " + (expr ? "TRUE" : "False")) ;
 
+    }
+
+    public Object accept(PrettyPrintVisitor ppv) {
+        return expr;
     }
 }

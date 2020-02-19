@@ -1,5 +1,7 @@
 package expression;
 
+import Visitors.PrettyPrintVisitor;
+
 public class IlExiste extends NonTerminal {
 
     public void afficher(String prefixe) {
@@ -8,4 +10,17 @@ public class IlExiste extends NonTerminal {
             child.afficher(prefixe+"        ");
         }
     }
+    public void accept(PrettyPrintVisitor ev) {
+        String [] symbols= {"∃" , "." ,"∧"};
+        int counter = 0;
+
+        System.out.print("(");
+        for (Expression child:son) {
+            System.out.print(symbols[counter]);
+            child.accept(ev);
+            counter++;
+        }
+        System.out.print(")");
+    }
+
 }
