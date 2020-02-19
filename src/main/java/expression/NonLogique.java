@@ -11,11 +11,14 @@ public class NonLogique extends NonTerminal {
         }
     }
 
-    public void accept(PrettyPrintVisitor ev) {
-        System.out.print("not(");
+    public Object accept(PrettyPrintVisitor ppv) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("not(");
         for (Expression child:son) {
-            child.accept(ev);
+            sb.append(child.accept(ppv));
         }
-        System.out.print(")");
+        sb.append(")");
+        return sb.toString();
     }
+
 }
