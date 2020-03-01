@@ -19,7 +19,7 @@ public class Litteral extends Terminal {
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
-        return expr;
+        return ppv.visit(this);
     }
 
 }

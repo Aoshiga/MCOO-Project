@@ -12,17 +12,7 @@ public class PourTout extends NonTerminal {
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
-        String [] symbols= {"∀" , "." ,"⇒"};
-        int counter = 0;
+        return ppv.visit(this);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        for (Expression child:son) {
-            sb.append(symbols[counter]);
-            sb.append(child.accept(ppv));
-            counter++;
-        }
-        sb.append(")");
-        return sb.toString();
     }
 }

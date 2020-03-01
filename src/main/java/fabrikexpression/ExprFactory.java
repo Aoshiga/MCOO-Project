@@ -20,6 +20,8 @@ public class ExprFactory {
             ((Litteral)e).set((String)value);
         } else if (e instanceof Entier) {
             ((Entier)e).set((Integer)value);
+        }else if (e instanceof Booleen) {
+            ((Booleen)e).set((Boolean)value);
         }
         return e;
     }

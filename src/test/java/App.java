@@ -1,4 +1,6 @@
 
+import Visitors.PrettyPrintInterpreter;
+import Visitors.PrettyPrintVisitor;
 import expression.*;
 import fabrikexpression.*;
 
@@ -8,25 +10,49 @@ public class App {
 
 public static void main(String [] args){
     ExprFactory f = ExprFactory.getInstance();
+    PrettyPrintInterpreter ppv = new PrettyPrintInterpreter();
+
     try {
         Expression x = f.makeLeaf("Litteral", "x");
         Expression X = f.makeLeaf("Litteral", "X");
+        Expression Y = f.makeLeaf("Litteral", "Y");
+        Expression Z = f.makeLeaf("Litteral", "Z");
+        Expression[] numbers = new Expression[10];
+        for (int i=0; i < 10; i++) {
+            numbers[i] = f.makeLeaf("Entier", i);
+        };
 
-    Expression[] nb = new Expression[4];
-    for (int i=0; i < 4; i++) {
-            nb[i] = f.makeLeaf("Entier", i);
-
-
-    };
-
-
-        Expression ens123 = f.makeNode("EnsembleEnExtension", nb[1], nb[2], nb[3]);
-
+        //--------------------------------------------
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
         Expression exemple1 = f.makeNode("EtLogique",
                 f.makeNode("Egal", X, ens123),
-                f.makeNode("PourTout", x, f.makeNode("Appartient", x, X), f.makeNode("Superieur", x, nb[0]))
+                f.makeNode("PourTout", x, f.makeNode("Appartient", x, X), f.makeNode("Superieur", x, numbers[0]))
         );
-        exemple1.afficher("");
+       // exemple1.afficher("");
+        System.out.println( exemple1.accept(ppv));
+        //--------------------------------------------
+        Expression ens456 = f.makeNode("EnsembleEnExtension", numbers[4], numbers[5], numbers[6]);
+        Expression exemple2 = f.makeNode("EtLogique",
+                f.makeNode("Egal", Y, ens456),
+                f.makeNode("IlExiste", Z, f.makeNode("Inclus", Z, Y), f.makeNode("Card", Z, numbers[3]))
+        );
+        //exemple2.afficher("");
+        System.out.println( exemple2.accept(ppv));
+        //--------------------------------------------
+        Expression exemple3 = f.makeNode("EtLogique",
+                f.makeNode("Egal", X, ens123),
+                f.makeNode("IlExiste", x, f.makeNode("Inclus", x, X), f.makeNode("Card", x, numbers[1]))
+        );
+        //exemple3.afficher("");
+        System.out.println( exemple3.accept(ppv));
+        //--------------------------------------------
+        Expression ensVide = f.makeNode("EnsembleEnExtension");
+
+        Expression exemple4 = f.makeNode("Egal", X, f.makeNode("OuLogique",
+                ensVide,ens123
+        ));
+        //exemple2.afficher("");
+        System.out.println( exemple4.accept(ppv));
     }catch(Exception exc){
         exc.printStackTrace();
 

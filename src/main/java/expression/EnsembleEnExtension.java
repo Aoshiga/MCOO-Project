@@ -15,17 +15,7 @@ public class EnsembleEnExtension extends NonTerminal {
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
-        StringBuilder sb = new StringBuilder();
-        Iterator<Expression> iterator = son.iterator();
-        sb.append("{ ");
-        while (iterator.hasNext()) {
-            sb.append(iterator.next().accept(ppv));
-            if (iterator.hasNext()) {
-                sb.append(",");
-            }
-        }
-        sb.append(" }");
-        return sb.toString();
+       return ppv.visit(this);
     }
 
 }

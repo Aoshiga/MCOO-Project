@@ -10,7 +10,7 @@ public class Entier extends Terminal {
         this.expr = expr;
     }
 
-    public int get(){
+    public Integer get(){
         return expr;
     }
 
@@ -19,6 +19,6 @@ public class Entier extends Terminal {
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
-        return this.expr;
+      return ppv.visit(this);
     }
 }

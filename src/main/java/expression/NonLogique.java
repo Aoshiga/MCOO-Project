@@ -12,13 +12,7 @@ public class NonLogique extends NonTerminal {
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("not(");
-        for (Expression child:son) {
-            sb.append(child.accept(ppv));
-        }
-        sb.append(")");
-        return sb.toString();
+       return ppv.visit(this);
     }
 
 }

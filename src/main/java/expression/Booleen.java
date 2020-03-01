@@ -13,11 +13,11 @@ public class Booleen extends Terminal {
         this.expr = expr;
     }
 
-    public boolean get() {
+    public Object get() {
         return expr;
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
-        return expr;
+        return ppv.visit(this);
     }
 }
