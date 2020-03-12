@@ -1,6 +1,7 @@
 package expression;
 
-import Visitors.PrettyPrintVisitor;
+import Visitors.PrettyPrint.PrettyPrintVisitor;
+import Visitors.Verificateur.VerificateurVisiteur;
 
 public class IlExiste extends NonTerminal {
 
@@ -14,6 +15,9 @@ public class IlExiste extends NonTerminal {
     public Object accept(PrettyPrintVisitor ppv) {
         return ppv.visit(this);
 
+    }
+    public Object accept(VerificateurVisiteur vv) {
+        return vv.visit(this);
     }
 
 }

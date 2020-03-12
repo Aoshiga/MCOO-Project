@@ -1,8 +1,7 @@
 package expression;
 
-import Visitors.PrettyPrintVisitor;
-
-import java.util.ArrayList;
+import Visitors.PrettyPrint.PrettyPrintVisitor;
+import Visitors.Verificateur.VerificateurVisiteur;
 
 public class Appartient extends NonTerminal {
 
@@ -16,5 +15,8 @@ public class Appartient extends NonTerminal {
 
     public Object accept(PrettyPrintVisitor ppv) {
         return ppv.visit(this);
+    }
+    public Object accept(VerificateurVisiteur vv) {
+        return vv.visit(this);
     }
 }

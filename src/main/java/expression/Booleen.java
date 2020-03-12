@@ -1,6 +1,7 @@
 package expression;
 
-import Visitors.PrettyPrintVisitor;
+import Visitors.PrettyPrint.PrettyPrintVisitor;
+import Visitors.Verificateur.VerificateurVisiteur;
 
 public class Booleen extends Terminal {
     public void afficher(String prefixe) {
@@ -19,5 +20,8 @@ public class Booleen extends Terminal {
 
     public Object accept(PrettyPrintVisitor ppv) {
         return ppv.visit(this);
+    }
+    public Object accept(VerificateurVisiteur vv) {
+        return vv.visit(this);
     }
 }

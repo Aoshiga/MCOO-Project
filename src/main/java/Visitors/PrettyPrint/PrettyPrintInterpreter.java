@@ -1,10 +1,13 @@
-package Visitors;
+package Visitors.PrettyPrint;
 
 import expression.*;
+import expression.Appartient;
+import expression.Inclus;
+import expression.InclusEgal;
 
 import java.util.Iterator;
 
-public class PrettyPrintInterpreter implements PrettyPrintVisitor{
+public class PrettyPrintInterpreter implements PrettyPrintVisitor {
 
     public Object visit(Entier n) {
         return n.get();
@@ -27,7 +30,7 @@ public class PrettyPrintInterpreter implements PrettyPrintVisitor{
     }
     public Object visit(Card n) {
         StringBuilder sb = new StringBuilder();
-        sb.append("card("+n.son.get(0).accept(this)+") = " + n.son.get(1).accept(this));
+        sb.append("card("+n.son.get(0).accept(this)+")");
 
         return sb.toString();
     }
@@ -231,10 +234,5 @@ public class PrettyPrintInterpreter implements PrettyPrintVisitor{
         }
         return sb.toString();
     }
-
-    public Object visit(Terminal n) {
-        return n.get();
-    }
-
 
 }

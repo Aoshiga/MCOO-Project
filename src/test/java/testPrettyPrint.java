@@ -1,6 +1,4 @@
-import Visitors.PrettyPrintInterpreter;
-import Visitors.PrettyPrintVisitor;
-import expression.Entier;
+import Visitors.PrettyPrint.PrettyPrintInterpreter;
 import expression.Expression;
 import fabrikexpression.ExprFactory;
 

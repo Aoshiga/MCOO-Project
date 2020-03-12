@@ -1,7 +1,5 @@
 package expression;
 
-import Visitors.PrettyPrintVisitor;
-
 import java.util.ArrayList;
 
 public abstract class NonTerminal extends Expression {

@@ -1,8 +1,6 @@
 package expression;
-import Visitors.PrettyPrintVisitor;
-
-import java.util.ArrayList;
-import java.util.Iterator;
+import Visitors.PrettyPrint.PrettyPrintVisitor;
+import Visitors.Verificateur.VerificateurVisiteur;
 
 
 public class EnsembleEnExtension extends NonTerminal {
@@ -17,5 +15,7 @@ public class EnsembleEnExtension extends NonTerminal {
     public Object accept(PrettyPrintVisitor ppv) {
        return ppv.visit(this);
     }
-
+    public Object accept(VerificateurVisiteur vv) {
+        return vv.visit(this);
+    }
 }

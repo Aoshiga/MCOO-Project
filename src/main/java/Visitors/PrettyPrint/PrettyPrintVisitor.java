@@ -1,6 +1,9 @@
-package Visitors;
+package Visitors.PrettyPrint;
 
 import expression.*;
+import expression.Appartient;
+import expression.Inclus;
+import expression.InclusEgal;
 
 public interface PrettyPrintVisitor {
      public Object visit(Entier n) ;
@@ -10,7 +13,6 @@ public interface PrettyPrintVisitor {
      public Object visit(Different n) ;
      public Object visit(Moins n) ;
      public Object visit(OuLogique n) ;
-
      public Object visit(Egal n) ;
      public Object visit(EnsembleEnExtension n) ;
      public Object visit(EtLogique n) ;
