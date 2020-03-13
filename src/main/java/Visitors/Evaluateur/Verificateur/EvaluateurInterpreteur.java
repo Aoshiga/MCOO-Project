@@ -8,11 +8,13 @@ import java.util.HashMap;
 public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
     private HashMap<Litteral,Object> variables = new HashMap<>();
+    private HashMap<Litteral,Integer> levels = new HashMap<>();
+    private  Integer nestedLevel = 0;
     public void clear(){
         variables.clear();
     }
 
-    public HashMap<Litteral,Object> getVariables(){
+    public HashMap<Litteral, Object> getVariables(){
         return variables;
     }
     @Override
@@ -23,7 +25,7 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
     @Override
     public Object visit(Appartient input)
     {
-        return null;
+        return  input.son.get(1).accept(this);
     }
 
     @Override
@@ -56,10 +58,11 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
         Expression lhs = input.son.get(0);
         Expression rhs = input.son.get(1);
         boolean isCompare = true;
-
         if(lhs.getClass().getName().equals("expression.Litteral")&&!variables.containsKey((Litteral)lhs)) {
             isCompare = false;
             variables.put((Litteral) lhs, rhs.accept(this));
+            levels.put((Litteral)lhs, nestedLevel);
+
             System.out.println("IS definition");
         }
         if(isCompare){
@@ -107,12 +110,16 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
     @Override
     public Object visit(Inferieur input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        return (Integer)firstChild.accept(this) < (Integer)secondChild.accept(this);
     }
 
     @Override
     public Object visit(InferieurEgal input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        return (Integer)firstChild.accept(this) <= (Integer)secondChild.accept(this);
     }
 
     @Override
@@ -122,7 +129,7 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
     @Override
     public Object visit(NonLogique input) {
-        return null;
+        return (!(Boolean)input.accept(this));
     }
 
     @Override
@@ -130,29 +137,50 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
     return true;
     }
 
+    private Object getVariable(Expression input){
+        if(variables.containsKey((Litteral)input)&&levels.get((Litteral)input)<nestedLevel){
+            return input;
+        }
+        return null;
+    }
     @Override
     public Object visit(PourTout input) {
+        nestedLevel+=1;
         Expression firstChild = input.son.get(0);
         Expression secondChild = input.son.get(1);
-        Expression thirdChild = input.son.get(1);
+        Expression thirdChild = input.son.get(2);
+        boolean result = true;
+        if(firstChild.getClass().getName().equals("expression.Litteral"))
+            variables.put((Litteral) firstChild,"");
+            levels.put((Litteral) firstChild,nestedLevel);
 
         if(secondChild.getClass().getName().equals("expression.Appartient")){
-
-            if(variables.containsKey(((NonTerminal)secondChild).son.get(1))){
-                System.out.println(variables.get(((NonTerminal)secondChild)));
+            if(getVariable(((NonTerminal)secondChild).son.get(1))!=null){
+                for(Object obj : (ArrayList)secondChild.accept(this)){
+                    variables.put((Litteral) firstChild,obj);
+                    Boolean tmp = (Boolean) thirdChild.accept(this);
+                    result &= tmp;
+                    System.out.println(result);
+                }
             }
         }
+        System.out.println(levels);
+        nestedLevel-=1;
 
-        return true;
+        return result;
     }
 
     @Override
     public Object visit(Superieur input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        return (Integer)firstChild.accept(this) > (Integer)secondChild.accept(this);
     }
 
     @Override
     public Object visit(SuperieurEgal input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        return (Integer)firstChild.accept(this) >= (Integer)secondChild.accept(this);
     }
 }

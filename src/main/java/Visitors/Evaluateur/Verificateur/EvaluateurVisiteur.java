@@ -5,7 +5,7 @@ import expression.*;
 import java.util.HashMap;
 
 public interface EvaluateurVisiteur {
-     public HashMap<Litteral,Object> getVariables();
+     public HashMap<Litteral, Object> getVariables();
      public void clear();
           public Object visit(Entier input) ;
      public Object visit(Appartient input);

@@ -106,4 +106,30 @@ public class EvaluateurInterpreteurTest {
         Assert.assertEquals(false, result);
 
     }
+    @Test
+    public void pourToutFalse() throws Exception {
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+
+        Expression X = f.makeLeaf("Litteral", "X");
+        Expression Equals = f.makeNode("Egal", X, ens123);
+        Expression x = f.makeLeaf("Litteral","x");
+        Expression et = f.makeNode("EtLogique", Equals ,f.makeNode("PourTout",x,f.makeNode("Appartient",x,X),f.makeNode("Inferieur",x,f.makeLeaf("Entier",3))));
+        System.out.println(et.accept(ppv));
+        Boolean result = (Boolean)et.accept(ev);
+        Assert.assertEquals(false, result);
+
+    }
+    @Test
+    public void pourToutTrue() throws Exception {
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+
+        Expression X = f.makeLeaf("Litteral", "X");
+        Expression Equals = f.makeNode("Egal", X, ens123);
+        Expression x = f.makeLeaf("Litteral","x");
+        Expression et = f.makeNode("EtLogique", Equals ,f.makeNode("PourTout",x,f.makeNode("Appartient",x,X),f.makeNode("Superieur",x,f.makeLeaf("Entier",0))));
+        System.out.println(et.accept(ppv));
+        Boolean result = (Boolean)et.accept(ev);
+        Assert.assertEquals(true, result);
+
+    }
 }
