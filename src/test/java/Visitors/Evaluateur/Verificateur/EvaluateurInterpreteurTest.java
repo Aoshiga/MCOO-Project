@@ -58,7 +58,7 @@ public class EvaluateurInterpreteurTest {
 
     }
     @Test
-    public void expectTrue() throws Exception {
+    public void testAffectiationEstVrai() throws Exception {
         Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
         Expression X = f.makeLeaf("Litteral", "X");
         Expression Equals = f.makeNode("Egal", X, ens123);
@@ -67,7 +67,6 @@ public class EvaluateurInterpreteurTest {
         Boolean result = (Boolean)et.accept(ev);
         System.out.println("Result : " + result);
         Assert.assertEquals(true, result);
-
     }
     @Test
     public void egalTwoNumbersTrue() throws Exception {

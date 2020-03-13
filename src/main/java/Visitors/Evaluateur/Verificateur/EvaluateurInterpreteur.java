@@ -79,14 +79,11 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
             isCompare = false;
             variables.put((Litteral) lhs, rhs.accept(this));
             levels.put((Litteral)lhs, nestedLevel);
-
-            System.out.println("IS definition");
         }
         if(isCompare){
 
             Boolean result = lhs.accept(this)==rhs.accept(this);
-            System.out.println("IS compare" + result);
-            System.out.println(rhs.accept(this));
+
             return lhs.accept(this)==rhs.accept(this);
 
         }
@@ -128,7 +125,6 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
                     variables.put((Litteral) firstChild,obj);
                     Boolean tmp = (Boolean) thirdChild.accept(this);
                     result &= tmp;
-                    System.out.println(result);
                 }
             }
         }else if(secondChild.getClass().getName().equals("expression.InclusEgal")){
@@ -224,7 +220,6 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
                     variables.put((Litteral) firstChild,obj);
                     Boolean tmp = (Boolean) thirdChild.accept(this);
                     result &= tmp;
-                    System.out.println(result);
                 }
             }
         }else if(secondChild.getClass().getName().equals("expression.InclusEgal")){
