@@ -41,7 +41,7 @@ public static void main(String [] args){
         //--------------------------------------------
         Expression exemple3 = f.makeNode("EtLogique",
                 f.makeNode("Egal", X, ens123),
-                f.makeNode("IlExiste", x, f.makeNode("Inclus", x, X), f.makeNode("Egal",f.makeNode("Card", x),numbers[1]))
+                f.makeNode("IlExiste", x, f.makeNode("Appartient", x, X), f.makeNode("Egal",f.makeNode("Card", x),numbers[1]))
         );
         //exemple3.afficher("");
         System.out.println( exemple3.accept(ppv));

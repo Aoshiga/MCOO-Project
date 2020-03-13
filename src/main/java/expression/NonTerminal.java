@@ -7,6 +7,7 @@ public abstract class NonTerminal extends Expression {
     public void set(Expression expr){
         son.add(expr);
     }
+
     public void remove(Expression expr){
         son.remove(expr);
     }

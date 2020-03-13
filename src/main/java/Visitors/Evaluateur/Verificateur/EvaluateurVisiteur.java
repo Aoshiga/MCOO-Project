@@ -1,17 +1,8 @@
-package Visitors.Verificateur;
+package Visitors.Evaluateur.Verificateur;
 
 import expression.*;
-import expression.Appartient;
-import expression.Inclus;
-import expression.InclusEgal;
 
-import java.util.ArrayList;
-
-public interface VerificateurVisiteur {
-     public ArrayList<String> errorList = new ArrayList<String>();
-     public ArrayList<String> getErrorList ();
-     public int getNumberErrors ();
-
+public interface EvaluateurVisiteur {
      public Object visit(Entier n) ;
      public Object visit(Appartient n);
      public Object visit(Booleen n) ;

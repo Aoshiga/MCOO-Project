@@ -1,5 +1,6 @@
 package expression;
 
+import Visitors.Evaluateur.Verificateur.EvaluateurVisiteur;
 import Visitors.PrettyPrint.PrettyPrintVisitor;
 import Visitors.Verificateur.VerificateurVisiteur;
 
@@ -10,6 +11,9 @@ public class Egal extends NonTerminal {
         for (Expression child:son) {
             child.afficher(prefixe+ "       ");
         }
+    }
+    public Object accept(EvaluateurVisiteur ev) {
+        return ev.visit(this);
     }
 
     public Object accept(PrettyPrintVisitor ppv) {
