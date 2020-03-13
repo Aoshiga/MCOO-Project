@@ -446,7 +446,7 @@ public class VerificateurInterpreteurTest {
         Expression moinsEntiers = f.makeNode("Moins", numbers[2], litteral);
         System.out.println(moinsEntiers.accept(ppv));
         moinsEntiers.accept(vv);
-        Assert.assertEquals(0, vv.getNumberErrors());
+        Assert.assertEquals(1, vv.getNumberErrors());
 
 
     }

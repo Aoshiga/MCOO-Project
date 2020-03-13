@@ -102,6 +102,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
     }
 
     public Object visit(Card n) {
+        System.out.println("IN CARD");
         int nbChildren = n.son.size();
         if (nbChildren != 1) {
             this.errorList.add("Card ne prend qu'un seul fils");
@@ -171,11 +172,14 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         if (elementsToVisit>=2 ) {
             Expression lhsChild = n.son.get(0);
             Expression rhsChild = n.son.get(1);
-            System.out.println("lhs : " + getExpressionType(lhsChild));
-            System.out.println("rhs : " + getExpressionType(rhsChild));
+
             boolean isDefinition = false;
             ArrayList<String> lhsChildType = getExpressionType(lhsChild);
             ArrayList<String> rhsChildType = getExpressionType(rhsChild);
+            System.out.println("lhs : " + lhsChildType);
+            System.out.println("rhs : " + rhsChildType);
+            System.out.println("IN gak card");
+
             if (lhsChildType.contains(String.valueOf(ExpressionTypes.Litteral))) {
                 if(!definedLitterals.containsKey(lhsChild)) {
                     if (rhsChildType.contains(String.valueOf(ExpressionTypes.Ensemble))) {
@@ -191,7 +195,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
             if(!rhsChildType.contains(ExpressionTypes.ExprArith.toString())&&!rhsChildType.contains(ExpressionTypes.Ensemble.toString()))
                 this.errorList.add("Egal : le 2 parametre de egal doit etre un ensemble ou une expression arithmetique");
 
-            if(!getExpressionType(lhsChild).equals(getExpressionType(rhsChild)) && !isDefinition)
+            if(!lhsChildType.equals(rhsChildType) && !isDefinition)
                 this.errorList.add("Egal : les deux parametres ne sont pas du meme type");
         }
         System.out.println("THERE");
@@ -276,6 +280,8 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
                 this.errorList.add("IlExiste : le parametre " + (2) + " doit avoir le type " + expected[1]);
 
             //Param 3 of ilExiste expression : Expr
+            System.out.println("IN test card");
+
             ArrayList<String> thirdChildType = getExpressionType(thirdChild);
             if(!thirdChildType.contains(expected[2].toString()))
                 this.errorList.add("IlExiste : le parametre " + (3) + " doit avoir le type " + expected[2]);
