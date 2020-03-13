@@ -39,39 +39,9 @@ public class VerificateurInterpreteurTest {
 
     }
 
-    @Test
-    public void MoinsExprArithEnsemble() throws Exception {
-        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
-        Expression moinsEnsemble = f.makeNode("Moins", numbers[2], ens123);
-
-        System.out.println(moinsEnsemble.accept(ppv));
-        moinsEnsemble.accept(vv);
-        Assert.assertEquals(1, vv.getNumberErrors());
-
-    }
-
-    @Test
-    public void MoinsExprArithExprArith() throws Exception {
-        Expression moinsEntiers = f.makeNode("Moins", numbers[2], numbers[1]);
-        System.out.println(moinsEntiers.accept(ppv));
-        moinsEntiers.accept(vv);
-        Assert.assertEquals(0, vv.getNumberErrors());
-
-
-    }
-
-    @Test
-    public void MoinsMoins() throws Exception {
-        Expression moinsEntiers = f.makeNode("Moins", numbers[2], numbers[1]);
-        Expression moinsEntiersMoins = f.makeNode("Moins", moinsEntiers, numbers[1]);
-
-        System.out.println(moinsEntiersMoins.accept(ppv));
-        moinsEntiersMoins.accept(vv);
-        Assert.assertEquals(0, vv.getNumberErrors());
-
-
-    }
-
+    /**
+     * @Test Appartient
+     */
     @Test
     public void AppartientNonEnsemble() throws Exception {
         Expression appartient = f.makeNode("Appartient", numbers[2], numbers[2]);
@@ -100,8 +70,6 @@ public class VerificateurInterpreteurTest {
         System.out.println(appartient.accept(ppv));
         appartient.accept(vv);
         Assert.assertEquals(0, vv.getNumberErrors());
-
-
     }
 
     @Test
@@ -124,26 +92,105 @@ public class VerificateurInterpreteurTest {
         Assert.assertEquals(0, vv.getNumberErrors());
 
     }
+
     @Test
-    public void AppartientMoinsLitteral() throws Exception {
+    public void AppartientLitteralIsEntier() throws Exception {
         Expression litteral = f.makeLeaf("Litteral", "x");
-        Expression moinsEntiers = f.makeNode("Moins", numbers[2], numbers[1]);
-        Expression appartient = f.makeNode("Appartient", moinsEntiers, litteral);
+        Expression equal = f.makeNode("Egal", litteral, numbers[1]);
+
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        Expression appartient = f.makeNode("Appartient", litteral, ens123);
+
+        Expression et = f.makeNode("EtLogique", equal, appartient);
+        System.out.println(et.accept(ppv));
+        et.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
+
+    }
+
+    @Test
+    public void AppartientLitteralIsEnsemble() throws Exception {
+        Expression litteral = f.makeLeaf("Litteral", "x");
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        Expression equal = f.makeNode("Egal", litteral, ens123);
+
+        Expression appartient = f.makeNode("Appartient", litteral, ens123);
+        Expression et = f.makeNode("EtLogique", equal, appartient);
+        System.out.println(et.accept(ppv));
+        et.accept(vv);
+        Assert.assertEquals(1, vv.getNumberErrors());
+
+    }
+
+    @Test
+    public void AppartientLitteralNotDefined() throws Exception {
+        Expression litteral = f.makeLeaf("Litteral", "x");
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        Expression appartient = f.makeNode("Appartient", litteral, ens123);
+
         System.out.println(appartient.accept(ppv));
         appartient.accept(vv);
         Assert.assertEquals(2, vv.getNumberErrors());
 
     }
 
+    /**
+     * @Test Booleen
+     */
     @Test
-    public void DifferentEntiers() throws Exception {
-        Expression differentEnsemble3 = f.makeNode("Different", numbers[2], numbers[2]);
-        System.out.println(differentEnsemble3.accept(ppv));
-        differentEnsemble3.accept(vv);
+    public void Booleen() throws Exception {
+        Expression bool = f.makeLeaf("Booleen", true);
+        System.out.println(bool.accept(ppv));
+        bool.accept(vv);
         Assert.assertEquals(0, vv.getNumberErrors());
 
     }
 
+    /**
+     * @Test Card
+     */
+    @Test
+    public void CardEntier() throws Exception {
+        Expression entier = f.makeLeaf("Entier", 5);
+        Expression card = f.makeNode("Card", entier);
+        System.out.println(card.accept(ppv));
+        card.accept(vv);
+        Assert.assertEquals(1, vv.getNumberErrors());
+    }
+
+    @Test
+    public void CardEnsemble() throws Exception {
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        Expression card = f.makeNode("Card", ens123);
+        System.out.println(card.accept(ppv));
+        card.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
+    }
+
+    @Test
+    public void CardLitteralDefined() throws Exception {
+        Expression litteral = f.makeLeaf("Litteral", "x");
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        Expression equal = f.makeNode("Egal", litteral, ens123);
+        Expression card = f.makeNode("Card", litteral);
+        Expression et = f.makeNode("EtLogique", equal, card);
+        System.out.println(et.accept(ppv));
+        et.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
+    }
+
+    @Test
+    public void CardLitteralNotDefined() throws Exception {
+        Expression litteral = f.makeLeaf("Litteral", "x");
+        Expression card = f.makeNode("Card", litteral);
+        System.out.println(card.accept(ppv));
+        card.accept(vv);
+        Assert.assertEquals(2, vv.getNumberErrors());
+    }
+
+    /**
+     * @Test Different
+     */
     @Test
     public void DifferentEnsembles() throws Exception {
 
@@ -160,84 +207,105 @@ public class VerificateurInterpreteurTest {
     public void DifferentEntierEnsemble() throws Exception {
 
         Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
-        Expression differentEnsemble1 = f.makeNode("Different", numbers[2], ens123);
+        Expression differentEnsemble = f.makeNode("Different", numbers[2], ens123);
 
-        System.out.println(differentEnsemble1.accept(ppv));
-        differentEnsemble1.accept(vv);
+        System.out.println(differentEnsemble.accept(ppv));
+        differentEnsemble.accept(vv);
         Assert.assertEquals(1, vv.getNumberErrors());
 
     }
+
     @Test
     public void DifferentEntierLitteral() throws Exception {
-        Expression litteral = f.makeLeaf("Litteral", "x");
+        Expression litteral1 = f.makeLeaf("Litteral", "x");
+        Expression litteral2 = f.makeLeaf("Litteral", "y");
 
-        Expression differentEnsemble1 = f.makeNode("Different", litteral,litteral);
-        System.out.println(differentEnsemble1.accept(ppv));
-        differentEnsemble1.accept(vv);
-        Assert.assertEquals(2, vv.getNumberErrors());
+        Expression differentEnsemble = f.makeNode("Different", litteral1,litteral2);
+        System.out.println(differentEnsemble.accept(ppv));
+        differentEnsemble.accept(vv);
+        Assert.assertEquals(4, vv.getNumberErrors());
 
     }
 
     @Test
-    public void EgalEntiers() throws Exception {
-        Expression differentEnsemble3 = f.makeNode("Egal", numbers[2], numbers[2]);
-        System.out.println(differentEnsemble3.accept(ppv));
-        differentEnsemble3.accept(vv);
+    public void DifferentEntierLitteralDefined() throws Exception {
+        Expression litteral = f.makeLeaf("Litteral", "x");
+        Expression equal = f.makeNode("Egal", litteral, numbers[1]);
+        Expression differentEnsemble = f.makeNode("Different", litteral, numbers[2]);
+        Expression et = f.makeNode("EtLogique", equal, differentEnsemble);
+
+        System.out.println(et.accept(ppv));
+        et.accept(vv);
         Assert.assertEquals(0, vv.getNumberErrors());
 
     }
 
-    @Test
+    /**
+     * @Test Egal
+     */
+    @Test // Test la comparaison
+    public void EgalEntiers() throws Exception {
+        Expression egal = f.makeNode("Egal", numbers[2], numbers[2]);
+        System.out.println(egal.accept(ppv));
+        egal.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
+
+    }
+
+    @Test // Test la comparaison
     public void EgalEnsembles() throws Exception {
 
         Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
 
-        Expression differentEnsemble2 = f.makeNode("Egal", ens123, ens123);
-        System.out.println(differentEnsemble2.accept(ppv));
-        differentEnsemble2.accept(vv);
+        Expression egal = f.makeNode("Egal", ens123, ens123);
+        System.out.println(egal.accept(ppv));
+        egal.accept(vv);
         Assert.assertEquals(0, vv.getNumberErrors());
 
     }
 
-    @Test
+    @Test // Test la comparaison
     public void EgalEntierEnsemble() throws Exception {
 
         Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
-        Expression differentEnsemble1 = f.makeNode("Egal", numbers[2], ens123);
+        Expression egal = f.makeNode("Egal", numbers[2], ens123);
 
-        System.out.println(differentEnsemble1.accept(ppv));
-        differentEnsemble1.accept(vv);
+        System.out.println(egal.accept(ppv));
+        egal.accept(vv);
         Assert.assertEquals(1, vv.getNumberErrors());
 
     }
-    @Test
+
+    @Test // Test l'affectation
     public void EgalEntierLitteral() throws Exception {
         Expression litteral = f.makeLeaf("Litteral", "x");
 
-        Expression differentEnsemble1 = f.makeNode("Egal", litteral,litteral);
-        System.out.println(differentEnsemble1.accept(ppv));
-        differentEnsemble1.accept(vv);
+        Expression affectation = f.makeNode("Egal", litteral,litteral);
+        System.out.println(affectation.accept(ppv));
+        affectation.accept(vv);
         Assert.assertEquals(1, vv.getNumberErrors());
 
     }
 
-    @Test
-    public void EtLogiqueNombreEnfentsPlusQue2() throws Exception{
+    @Test // Test l'affectation
+    public void EgalLitteralLitteral() throws Exception {
+        Expression litteral1 = f.makeLeaf("Litteral", "x");
+        Expression litteral2 = f.makeLeaf("Litteral", "y");
 
-            Expression etLogique1 = f.makeNode("EtLogique", numbers[1],numbers[1],numbers[1]);
-            System.out.println(etLogique1.accept(ppv));
-            etLogique1.accept(vv);
-        Assert.assertEquals(1, vv.getNumberErrors());
+        Expression affectation1 = f.makeNode("Egal", litteral1, numbers[2]);
+        Expression affectation2 = f.makeNode("Egal", litteral2,litteral1);
 
-    }
-    @Test
-    public void EtLogiqueNombreEnfentsEgal1() throws Exception{
-        Expression etLogique1 = f.makeNode("EtLogique", numbers[1]);
-        System.out.println(etLogique1.accept(ppv));
-        etLogique1.accept(vv);
-        Assert.assertEquals(1, vv.getNumberErrors());
+        Expression et = f.makeNode("EtLogique", affectation1, affectation2);
+
+        System.out.println(et.accept(ppv));
+        et.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
 
     }
+
+    /**
+     * @Test EnsembleEnExtension
+     */
     @Test
     public void EnsembleEntiers() throws Exception{
         Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
@@ -246,33 +314,72 @@ public class VerificateurInterpreteurTest {
         Assert.assertEquals(0, vv.getNumberErrors());
 
     }
-    @Test
-    public void EnsembleLitteral() throws Exception{
-        Expression x = f.makeLeaf("Litteral", "x");
-        Expression z = f.makeLeaf("Litteral", "z");
-        Expression Z = f.makeLeaf("Litteral", "Z");
 
-        Expression ens123 = f.makeNode("EnsembleEnExtension",x,z,Z);
+    @Test
+    public void EnsembleLitteralNotDefine() throws Exception{
+        Expression x = f.makeLeaf("Litteral", "x");
+        Expression y = f.makeLeaf("Litteral", "y");
+        Expression z = f.makeLeaf("Litteral", "z");
+
+        Expression ens123 = f.makeNode("EnsembleEnExtension",x ,y ,z);
         System.out.println(ens123.accept(ppv));
         ens123.accept(vv);
+        Assert.assertEquals(6, vv.getNumberErrors());
+    }
+
+    @Test
+    public void EnsembleLitteralDefine() throws Exception{
+        Expression x = f.makeLeaf("Litteral", "x");
+        Expression y = f.makeLeaf("Litteral", "y");
+
+        Expression egal1 = f.makeNode("Egal", x, numbers[1]);
+        Expression egal2 = f.makeNode("Egal", y, numbers[2]);
+
+        Expression et1 = f.makeNode("EtLogique", egal1, egal2);
+        Expression ensembleTest = f.makeNode("EnsembleEnExtension", x, y);
+
+        Expression et2 = f.makeNode("EtLogique", et1, ensembleTest);
+
+        System.out.println(et2.accept(ppv));
+        et2.accept(vv);
         Assert.assertEquals(0, vv.getNumberErrors());
     }
 
     @Test
-    public void EnsembleWrongType() throws Exception{
+    public void EnsembleEmpty() throws Exception{
+        Expression ens = f.makeNode("EnsembleEnExtension");
 
-        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        System.out.println(ens.accept(ppv));
+        ens.accept(vv);
+        Assert.assertEquals(1, vv.getNumberErrors());
 
-        Expression x = f.makeLeaf("Litteral", "x");
-        Expression z = f.makeLeaf("Litteral", "z");
-        Expression Z = f.makeLeaf("Litteral", "Z");
-        Expression ensembleTest = f.makeNode("EnsembleEnExtension",x,z,Z,numbers[1]);
-
-        System.out.println(ens123.accept(ppv));
-        ens123.accept(vv);
-        Assert.assertEquals(0, vv.getNumberErrors());
     }
 
+    /**
+     * @Test EtLogique
+     */
+    @Test
+    public void EtLogiqueNombreEnfentsPlusQue2() throws Exception{
+
+        Expression etLogique1 = f.makeNode("EtLogique", numbers[1],numbers[1],numbers[1]);
+        System.out.println(etLogique1.accept(ppv));
+        etLogique1.accept(vv);
+        Assert.assertEquals(1, vv.getNumberErrors());
+
+    }
+
+    @Test
+    public void EtLogiqueNombreEnfentsEgal1() throws Exception{
+        Expression etLogique1 = f.makeNode("EtLogique", numbers[1]);
+        System.out.println(etLogique1.accept(ppv));
+        etLogique1.accept(vv);
+        Assert.assertEquals(1, vv.getNumberErrors());
+
+    }
+
+    /**
+     * @Test IlExiste
+     */
     @Test
     public void ilExisteInclus() throws Exception{
         Expression Z = f.makeLeaf("Litteral", "Z");
@@ -302,6 +409,7 @@ public class VerificateurInterpreteurTest {
         Assert.assertEquals(1, vv.getNumberErrors());
 
     }
+
     @Test
     public void ilExisteAppartientNonDefini() throws Exception{
         Expression x = f.makeLeaf("Litteral", "x");
@@ -316,9 +424,49 @@ public class VerificateurInterpreteurTest {
         );
         System.out.println( exemple3.accept(ppv));
         exemple3.accept(vv);
-        Assert.assertEquals(3, vv.getNumberErrors());
+        Assert.assertEquals(4, vv.getNumberErrors());
 
     }
+
+    @Test
+    public void MoinsExprArithEnsemble() throws Exception {
+        Expression ens123 = f.makeNode("EnsembleEnExtension", numbers[1], numbers[2], numbers[3]);
+        Expression moinsEnsemble = f.makeNode("Moins", numbers[2], ens123);
+
+        System.out.println(moinsEnsemble.accept(ppv));
+        moinsEnsemble.accept(vv);
+        Assert.assertEquals(1, vv.getNumberErrors());
+
+    }
+
+    @Test
+    public void MoinsExprArithExprArith() throws Exception {
+        Expression litteral = f.makeLeaf("Litteral", "x");
+
+        Expression moinsEntiers = f.makeNode("Moins", numbers[2], litteral);
+        System.out.println(moinsEntiers.accept(ppv));
+        moinsEntiers.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
+
+
+    }
+
+    @Test
+    public void MoinsMoins() throws Exception {
+        Expression moinsEntiers = f.makeNode("Moins", numbers[2], numbers[1]);
+        Expression moinsEntiersMoins = f.makeNode("Moins", moinsEntiers, numbers[1]);
+
+        System.out.println(moinsEntiersMoins.accept(ppv));
+        moinsEntiersMoins.accept(vv);
+        Assert.assertEquals(0, vv.getNumberErrors());
+
+
+    }
+
+
+
+
+
 
 
 }
