@@ -13,7 +13,7 @@ public class IncorrectTypageException extends Exception {
     }
 
     public String toString(){
-        return this.type + " Dosen't match expected type : " + this.excpected;
+        return this.type + " Doesn't match expected type : " + this.excpected;
     }
 
 }

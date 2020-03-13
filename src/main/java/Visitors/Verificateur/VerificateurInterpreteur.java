@@ -6,35 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VerificateurInterpreteur implements VerificateurVisiteur {
+
     private enum LitteralType{
         ENSEMBLE,
         EXPRARITH,
         DEFAULT,
     }
-    private HashMap<Litteral,LitteralType> definedLitterals = new HashMap<>();
 
-    private int nestedLevel = 0;
-    private ArrayList<String> getExpressionType(Object expr){
-        ArrayList<String> types = new ArrayList<String>();
-        types.add("Expr");
-        String type = String.valueOf(((Expression)expr).accept(this));
-        if(type.equals(String.valueOf(ExpressionTypes.Litteral))) {
-            if(definedLitterals.containsKey((Litteral)expr)) {
-                if (String.valueOf(definedLitterals.get(expr)).equals(String.valueOf(LitteralType.ENSEMBLE))) {
-                    types.add(String.valueOf(ExpressionTypes.Ensemble));
-                }
-                if (definedLitterals.get(expr).equals(String.valueOf(LitteralType.EXPRARITH))){
-                    types.add(String.valueOf(ExpressionTypes.ExprArith));
-                }
-            }
-            types.add(String.valueOf(ExpressionTypes.Litteral));
-
-        }else{
-            types.add(type);
-        }
-
-        return types;
-    }
     private enum ExpressionTypes{
         ExprArith,
         Ensemble,
@@ -47,6 +25,32 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         Expr,
         ExprEnsembliste
     }
+
+    private HashMap<Litteral,LitteralType> definedLitterals = new HashMap<>();
+
+    private int nestedLevel = 0;
+    private ArrayList<String> getExpressionType(Object expr){
+        ArrayList<String> types = new ArrayList<String>();
+        types.add("Expr");
+        String type = String.valueOf(((Expression)expr).accept(this));
+        if(type.equals(String.valueOf(ExpressionTypes.Litteral))) {
+            if(definedLitterals.containsKey((Litteral)expr)) {
+                if (String.valueOf(definedLitterals.get(expr)).equals(String.valueOf(LitteralType.ENSEMBLE))) {
+                    types.add(String.valueOf(ExpressionTypes.Ensemble));
+                }
+                if (String.valueOf(definedLitterals.get(expr)).equals(String.valueOf(LitteralType.EXPRARITH))){
+                    types.add(String.valueOf(ExpressionTypes.ExprArith));
+                }
+            }
+            types.add(String.valueOf(ExpressionTypes.Litteral));
+
+        }else{
+            types.add(type);
+        }
+
+        return types;
+    }
+
 
     public ArrayList<String> getErrorList() {
         return errorList;
@@ -64,9 +68,6 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         return errorList.size();
     }
 
-    public Object visit(Entier n) {
-        return ExpressionTypes.ExprArith ;
-    }
 
     public Object visit(Appartient n) {
         int nbChildren = n.son.size();
@@ -80,46 +81,45 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
             boolean variableDefined = false;
             ArrayList<String> childType = getExpressionType(n.son.get(i));
 
-            if (childType.contains(ExpressionTypes.Litteral.toString()))
+            if (childType.contains(ExpressionTypes.Litteral.toString())) {
                 if (definedLitterals.containsKey(n.son.get(i))) {
                     variableDefined = true;
                 } else {
-                    this.errorList.add("Appartient : le parametre " + (i + 1) + " n'est pas defini");
+                    this.errorList.add("Appartient : le parametre " + (i+1) + " n'est pas defini");
                 }
+            }
 
-            if(!childType.contains(String.valueOf(expected[i])))
-                this.errorList.add("Appartient : le parametre " + (i+1) + " n'est pas un " + expected[i]);
-            else
-                if(variableDefined){
-                    if(definedLitterals.containsKey(n.son.get(i).toString().equals(expected[i])))
-                        this.errorList.add("Appartient : le parametre " + (i+1) + " n'est pas un " + expected[i]);
-
-                }
+            if(!childType.contains(String.valueOf(expected[i])) ||
+                    (!variableDefined && definedLitterals.containsKey(n.son.get(i).toString().equals(expected[i])))) {
+                this.errorList.add("Appartient : le parametre " + (i + 1) + " n'est pas un " + expected[i]);
+            }
         }
         return ExpressionTypes.ExprEnsembliste;
     }
+
     public Object visit(Booleen n) {
         return ExpressionTypes.ExprLogique ;
     }
 
     public Object visit(Card n) {
-        System.out.println("IN CARD");
         int nbChildren = n.son.size();
         if (nbChildren != 1) {
-            this.errorList.add("Card prend un seul fils");
+            this.errorList.add("Card ne prend qu'un seul fils");
         }
-        //Expected types for Card
-        ExpressionTypes expected = ExpressionTypes.Ensemble;
-        System.out.println(definedLitterals);
 
-        int elementsToVisit = Math.min(nbChildren, 2);
+        System.out.println("HERE");
+
+        int elementsToVisit = Math.min(nbChildren, 1);
         if(elementsToVisit>0){
             ArrayList<String> childType = getExpressionType(n.son.get(0));
-            if(!childType.contains(String.valueOf(expected)))
-                this.errorList.add("Card : le parametre doit etre un "+expected);
+            if (childType.contains(ExpressionTypes.Litteral.toString()))
+                if (!definedLitterals.containsKey(n.son.get(0))) {
+                    this.errorList.add("Card : le parametre n'est pas defini");
+                }
+            if(!childType.contains(String.valueOf(ExpressionTypes.Ensemble)))
+                this.errorList.add("Card : le parametre doit etre un "+ExpressionTypes.Ensemble);
 
         }
-        System.out.println("OUT CARD");
 
         return ExpressionTypes.ExprArith;
     }
@@ -137,61 +137,29 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         boolean litteralDefined = true;
         for(int i=0 ;i<elementsToVisit;i++){
             ArrayList<String> ActualChildType = getExpressionType(n.son.get(i));
-            if( ActualChildType.contains(ExpressionTypes.Litteral.toString()) && i==0) {
-                System.out.println("HERE");
+            if( ActualChildType.contains(ExpressionTypes.Litteral.toString())) {
                 if(!definedLitterals.containsKey(n.son.get(i))) {
-                    this.errorList.add("Different : le litteral n'est pas defini ");
+                    this.errorList.add("Different : le litteral en parametre " + (i+1) +" n'est pas defini ");
                     litteralDefined = false;
                 }
             }
-            if( ActualChildType.contains(ExpectedEnsemble) && i==0) {
+            if(ActualChildType.contains(ExpectedEnsemble) && i==0) {
                 firstChildType = ExpectedEnsemble;
             }
-            else if(ActualChildType.contains(ExpectedExprArith)&& i==0){
+            else if(ActualChildType.contains(ExpectedExprArith) && i==0){
                 firstChildType = ExpectedExprArith;
-            }else if(i==0){
-                this.errorList.add("Different : le parametre " + (i + 1) + " n'est pas un " + ExpectedEnsemble + " ou " +ExpectedExprArith);
             }
-            if(!ActualChildType.contains(firstChildType) &&i==1 &&litteralDefined){
-                this.errorList.add("Different : le parametre " + (i + 1) + " n'a pas le meme type que le premier parameter");
+            if(!ActualChildType.contains(ExpectedEnsemble) && !ActualChildType.contains(ExpectedExprArith)){
+                this.errorList.add("Different : le parametre " + (i + 1) + " doit etre un ensemble ou une expression arithmetique");
+            }
+            if(!ActualChildType.contains(firstChildType) && i==1 && litteralDefined){
+                this.errorList.add("Different : les deux parametres ne sont pas du meme type");
             }
         }
         if(firstChildType!=null && firstChildType.equals(ExpectedEnsemble))
             return ExpressionTypes.ComparaisonEnsembliste;
 
         return ExpressionTypes.ComparaisonArithmetique;
-    }
-
-    public Object visit(Moins n) {
-        int nbChildren = n.son.size();
-        if (nbChildren != 2) {
-            this.errorList.add("Moins prend deux fils");
-        }
-        //Expected types for appartient
-        ExpressionTypes expected[] = {ExpressionTypes.ExprArith,ExpressionTypes.ExprArith};
-        int elementsToVisit = Math.min(nbChildren, 2);
-        for(int i=0 ;i<elementsToVisit;i++){
-            ArrayList<String> childType = getExpressionType(n.son.get(i));
-            if( !childType.contains(String.valueOf(expected[i])))
-                this.errorList.add("Moins : le parametre " + (i+1) + " n'est pas un "+expected[i]);
-        }
-
-        return ExpressionTypes.ExprArith;
-    }
-
-    public Object visit(OuLogique n) {
-        int nbChildren = n.son.size();
-        if (nbChildren != 2) {
-            this.errorList.add("ouLogique: prend deux fils");
-        }
-        int elementsToVisit = Math.min(nbChildren, 2);
-        for(int i=0 ;i<elementsToVisit;i++){
-            ArrayList<String> childType = getExpressionType(n.son.get(i));
-            if( childType.contains(ExpressionTypes.Expr))
-                this.errorList.add("ouLogique:les fils de ouLogique doivent etre des ensembles");
-        }
-
-        return ExpressionTypes.ExprLogique;
     }
 
     public Object visit(Egal n) {
@@ -203,10 +171,11 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         if (elementsToVisit>=2 ) {
             Expression lhsChild = n.son.get(0);
             Expression rhsChild = n.son.get(1);
+            System.out.println("lhs : " + getExpressionType(lhsChild));
+            System.out.println("rhs : " + getExpressionType(rhsChild));
             boolean isDefinition = false;
             ArrayList<String> lhsChildType = getExpressionType(lhsChild);
             ArrayList<String> rhsChildType = getExpressionType(rhsChild);
-            System.out.println(definedLitterals);
             if (lhsChildType.contains(String.valueOf(ExpressionTypes.Litteral))) {
                 if(!definedLitterals.containsKey(lhsChild)) {
                     if (rhsChildType.contains(String.valueOf(ExpressionTypes.Ensemble))) {
@@ -217,30 +186,42 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
                     isDefinition = true;
                 }
             }else if(!lhsChildType.contains(ExpressionTypes.ExprArith.toString())&&!lhsChildType.contains(ExpressionTypes.Ensemble.toString()))
-                this.errorList.add("Egal le 1 fils de egal doivent etre des ensembles ou un expression arithmetique");
+                this.errorList.add("Egal : le 1 parametre de egal doit etre un ensemble ou une expression arithmetique");
 
             if(!rhsChildType.contains(ExpressionTypes.ExprArith.toString())&&!rhsChildType.contains(ExpressionTypes.Ensemble.toString()))
-                this.errorList.add("Egal le 2 fils de egal doivent etre des ensembles ou un expression arithmetique");
+                this.errorList.add("Egal : le 2 parametre de egal doit etre un ensemble ou une expression arithmetique");
 
-                if(!lhsChild.getClass().getName().equals(rhsChild.getClass().getName()) && !isDefinition)
-                    this.errorList.add("Egal le 2 fils de egal doivent avoir le meme type pour les comparer");
+            if(!getExpressionType(lhsChild).equals(getExpressionType(rhsChild)) && !isDefinition)
+                this.errorList.add("Egal : les deux parametres ne sont pas du meme type");
         }
+        System.out.println("THERE");
 
         return ExpressionTypes.ComparaisonArithmetique;
     }
 
-
     public Object visit(EnsembleEnExtension n) {
         int nbChildren = n.son.size();
+        if(nbChildren == 0) {
+            this.errorList.add("EnsembleEnExtension : ensemble vide non autorisé");
+        }
 
         for(int i=0 ;i<nbChildren;i++){
             ArrayList<String> childType = getExpressionType(n.son.get(i));
-            if(childType.contains(ExpressionTypes.ExprArith))
-                this.errorList.add("EnsembleEnExtension : le parametre " + (i+1) + " doit etre une "+ExpressionTypes.ExprArith);
+
+            if(!childType.contains(String.valueOf(ExpressionTypes.ExprArith))) {
+                this.errorList.add("EnsembleEnExtension : le parametre " + (i + 1) + " doit etre une " + ExpressionTypes.ExprArith);
+            }
+
+            if(childType.contains(String.valueOf(ExpressionTypes.Litteral)) && !definedLitterals.containsKey(n.son.get(i)) ) {
+                this.errorList.add("EnsembleEnExtension : le litteral en parametre " + (i + 1) + " n'est pas défini");
+            }
         }
         return ExpressionTypes.Ensemble;
     }
 
+    public Object visit(Entier n) {
+        return ExpressionTypes.ExprArith ;
+    }
 
     public Object visit(EtLogique n) {
         int nbChildren = n.son.size();
@@ -256,6 +237,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
 
         return ExpressionTypes.ExprLogique;
     }
+
     public Object visit(IlExiste n) {
         int nbChildren = n.son.size();
         if (nbChildren != 3) {
@@ -270,6 +252,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
             Expression secondChild = n.son.get(1);
             Expression thirdChild = n.son.get(2);
 
+            //Param 1 of ilExiste expression : Litteral
             ArrayList<String> firstChildType = getExpressionType(firstChild);
 
             if( !firstChildType.contains(String.valueOf(expected[0])) )
@@ -278,32 +261,30 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
                 definedLitterals.put((Litteral)n.son.get(0),LitteralType.DEFAULT);
             }
 
-            System.out.println(firstChildType);
+            //Param 2 of ilExiste expression : ExprEnsembliste
             if(!firstChild.equals(((NonTerminal)secondChild).son.get(0)))
-                this.errorList.add("IlExiste : le parametre n'est pas le meme que la premier expression");
+                this.errorList.add("IlExiste : le premier parametre de l'expression ensembliste doit être identique au premier parametre de l'expression il existe");
             else{
                 if(((NonTerminal)secondChild).getClass().getName().equals("expression.Appartient"))
                     definedLitterals.put(((Litteral)n.son.get(0)),LitteralType.EXPRARITH);
                 else
                     definedLitterals.put(((Litteral)n.son.get(0)),LitteralType.ENSEMBLE);
             }
-            System.out.println("Defined list after : " + definedLitterals);
-            ArrayList<String> secondChildType = getExpressionType(secondChild);
 
+            ArrayList<String> secondChildType = getExpressionType(secondChild);
             if(!secondChildType.contains(expected[1].toString()))
                 this.errorList.add("IlExiste : le parametre " + (2) + " doit avoir le type " + expected[1]);
-            else{
 
-            }
-            ArrayList<String> thirdChildType = getExpressionType(firstChild);
-
+            //Param 3 of ilExiste expression : Expr
+            ArrayList<String> thirdChildType = getExpressionType(thirdChild);
             if(!thirdChildType.contains(expected[2].toString()))
-                this.errorList.add("IlExiste : le parametre " + (2) + " doit avoir le type " + expected[1]);
+                this.errorList.add("IlExiste : le parametre " + (3) + " doit avoir le type " + expected[2]);
 
         }
         nestedLevel-=1;
         return ExpressionTypes.ExprLogique;
     }
+
     public Object visit(Inclus n) {
         int nbChildren = n.son.size();
         if (nbChildren != 2) {
@@ -333,6 +314,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         }
         return ExpressionTypes.ExprEnsembliste;
     }
+
     public Object visit(InclusEgal n) {
         int nbChildren = n.son.size();
         if (nbChildren != 2) {
@@ -362,6 +344,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
         }
         return ExpressionTypes.ExprEnsembliste;
     }
+
     public Object visit(Inferieur n) {
         int nbChildren = n.son.size();
         if (nbChildren != 2) {
@@ -376,6 +359,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
 
         return ExpressionTypes.ExprLogique;
     }
+
     public Object visit(InferieurEgal n) {
         int nbChildren = n.son.size();
         if (nbChildren != 2) {
@@ -390,9 +374,28 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
 
         return ExpressionTypes.ExprLogique;
     }
+
     public Object visit(Litteral n) {
         return ExpressionTypes.Litteral;
     }
+
+    public Object visit(Moins n) {
+        int nbChildren = n.son.size();
+        if (nbChildren != 2) {
+            this.errorList.add("Moins prend deux fils");
+        }
+        //Expected types for appartient
+        ExpressionTypes expected[] = {ExpressionTypes.ExprArith,ExpressionTypes.ExprArith};
+        int elementsToVisit = Math.min(nbChildren, 2);
+        for(int i=0 ;i<elementsToVisit;i++){
+            ArrayList<String> childType = getExpressionType(n.son.get(i));
+            if( !childType.contains(String.valueOf(expected[i])))
+                this.errorList.add("Moins : le parametre " + (i+1) + " n'est pas un "+expected[i]);
+        }
+
+        return ExpressionTypes.ExprArith;
+    }
+
     public Object visit(NonLogique n) {
         int nbChildren = n.son.size();
         if (nbChildren != 1) {
@@ -403,6 +406,21 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
             ArrayList<String> childType = getExpressionType(n.son.get(i));
             if( childType.contains(ExpressionTypes.Expr))
                 this.errorList.add("notLogique:les fils de ouLogique doivent etre des ensembles");
+        }
+
+        return ExpressionTypes.ExprLogique;
+    }
+
+    public Object visit(OuLogique n) {
+        int nbChildren = n.son.size();
+        if (nbChildren != 2) {
+            this.errorList.add("ouLogique: prend deux fils");
+        }
+        int elementsToVisit = Math.min(nbChildren, 2);
+        for(int i=0 ;i<elementsToVisit;i++){
+            ArrayList<String> childType = getExpressionType(n.son.get(i));
+            if( childType.contains(ExpressionTypes.Expr))
+                this.errorList.add("ouLogique:les fils de ouLogique doivent etre des ensembles");
         }
 
         return ExpressionTypes.ExprLogique;
@@ -424,6 +442,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
 
         return ExpressionTypes.ExprArith;
     }
+
     public Object visit(PourTout n) {
         String special []= {"∀ "," . "," ⇒ "};
         StringBuilder sb = new StringBuilder();
@@ -438,6 +457,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
 
         return sb.toString();
     }
+
     public Object visit(Superieur n) {
         int nbChildren = n.son.size();
         if (nbChildren != 2) {
@@ -452,6 +472,7 @@ public class VerificateurInterpreteur implements VerificateurVisiteur {
 
         return ExpressionTypes.ExprLogique;
     }
+
     public Object visit(SuperieurEgal n) {
         int nbChildren = n.son.size();
         if (nbChildren != 2) {
