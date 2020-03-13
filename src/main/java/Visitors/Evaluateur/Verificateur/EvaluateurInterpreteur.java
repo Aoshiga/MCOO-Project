@@ -12,6 +12,7 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
     private  Integer nestedLevel = 0;
     public void clear(){
         variables.clear();
+        levels.clear();
     }
 
     public HashMap<Litteral, Object> getVariables(){
@@ -22,6 +23,12 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
         return input.get();
     }
 
+    private Object getVariable(Expression input){
+        if(variables.containsKey((Litteral)input)&&levels.get((Litteral)input)<nestedLevel){
+            return input;
+        }
+        return null;
+    }
     @Override
     public Object visit(Appartient input)
     {
@@ -35,22 +42,32 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
     @Override
     public Object visit(Card input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        return ((ArrayList)firstChild.accept(this)).size();
     }
 
     @Override
     public Object visit(Different input) {
-        return null;
+        Expression lhs = input.son.get(0);
+        Expression rhs = input.son.get(1);
+
+        return (lhs.accept(this) != rhs.accept(this));
     }
 
     @Override
     public Object visit(Moins input) {
-        return null;
+        Expression lhs = input.son.get(0);
+        Expression rhs = input.son.get(1);
+
+        return ((Integer)lhs.accept(this) - (Integer)rhs.accept(this));
     }
 
     @Override
     public Object visit(OuLogique input) {
-        return null;
+        Expression lhs = input.son.get(0);
+        Expression rhs = input.son.get(1);
+
+        return ((Boolean)lhs.accept(this) || (Boolean)rhs.accept(this));
     }
 
     @Override
@@ -69,6 +86,7 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
             Boolean result = lhs.accept(this)==rhs.accept(this);
             System.out.println("IS compare" + result);
+            System.out.println(rhs.accept(this));
             return lhs.accept(this)==rhs.accept(this);
 
         }
@@ -95,17 +113,66 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
     @Override
     public Object visit(IlExiste input) {
-        return null;
+        nestedLevel+=1;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        Expression thirdChild = input.son.get(2);
+        boolean result = true;
+        if(firstChild.getClass().getName().equals("expression.Litteral"))
+            variables.put((Litteral) firstChild,"");
+        levels.put((Litteral) firstChild,nestedLevel);
+
+        if(secondChild.getClass().getName().equals("expression.Appartient")){
+            if(getVariable(((NonTerminal)secondChild).son.get(1))!=null){
+                for(Object obj : (ArrayList)secondChild.accept(this)){
+                    variables.put((Litteral) firstChild,obj);
+                    Boolean tmp = (Boolean) thirdChild.accept(this);
+                    result &= tmp;
+                    System.out.println(result);
+                }
+            }
+        }else if(secondChild.getClass().getName().equals("expression.InclusEgal")){
+            if(getVariable(((NonTerminal)secondChild).son.get(1))!=null) {
+                //Test equals
+                variables.put((Litteral) firstChild,secondChild.accept(this));
+                boolean lessThanResult1 = (Boolean) thirdChild.accept(this);
+                ArrayList<Integer> reducedArray = new ArrayList<>((ArrayList)secondChild.accept(this));
+                if(reducedArray.size()>0)
+                    reducedArray.remove(reducedArray.size()-1);
+                //Test lessThan
+                variables.put((Litteral) firstChild,reducedArray);
+                boolean lessThanResut2 = (Boolean) thirdChild.accept(this);
+                //both must be true
+                result =lessThanResut2||lessThanResult1;
+            }
+        }else{
+            if(getVariable(((NonTerminal)secondChild).son.get(1))!=null) {
+                //Test lessThan
+                variables.put((Litteral) firstChild, secondChild.accept(this));
+                result = (Boolean) thirdChild.accept(this);
+            }
+        }
+        nestedLevel-=1;
+
+        return result;
     }
 
     @Override
     public Object visit(Inclus input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        ArrayList<Integer> reducedArray = new ArrayList<>((ArrayList)secondChild.accept(this));
+        if(reducedArray.size()>0)
+            reducedArray.remove(reducedArray.size()-1);
+
+        return reducedArray;
     }
 
     @Override
     public Object visit(InclusEgal input) {
-        return null;
+        Expression firstChild = input.son.get(0);
+        Expression secondChild = input.son.get(1);
+        return (ArrayList)secondChild.accept(this);
     }
 
     @Override
@@ -134,15 +201,12 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
 
     @Override
     public Object visit(Plus input) {
-    return true;
+        Expression lhs = input.son.get(0);
+        Expression rhs = input.son.get(1);
+
+        return ((Integer)lhs.accept(this) + (Integer)rhs.accept(this));
     }
 
-    private Object getVariable(Expression input){
-        if(variables.containsKey((Litteral)input)&&levels.get((Litteral)input)<nestedLevel){
-            return input;
-        }
-        return null;
-    }
     @Override
     public Object visit(PourTout input) {
         nestedLevel+=1;
@@ -163,8 +227,27 @@ public class EvaluateurInterpreteur implements EvaluateurVisiteur {
                     System.out.println(result);
                 }
             }
+        }else if(secondChild.getClass().getName().equals("expression.InclusEgal")){
+            if(getVariable(((NonTerminal)secondChild).son.get(1))!=null) {
+                //Test equals
+                variables.put((Litteral) firstChild,secondChild.accept(this));
+                boolean lessThanResult1 = (Boolean) thirdChild.accept(this);
+                ArrayList<Integer> reducedArray = new ArrayList<>((ArrayList)secondChild.accept(this));
+                if(reducedArray.size()>0)
+                    reducedArray.remove(reducedArray.size()-1);
+                //Test lessThan
+                variables.put((Litteral) firstChild,reducedArray);
+                boolean lessThanResut2 = (Boolean) thirdChild.accept(this);
+                //both must be true
+                result =lessThanResut2&&lessThanResult1;
+            }
+        }else{
+            if(getVariable(((NonTerminal)secondChild).son.get(1))!=null) {
+                //Test lessThan
+                variables.put((Litteral) firstChild, secondChild.accept(this));
+                result = (Boolean) thirdChild.accept(this);
+            }
         }
-        System.out.println(levels);
         nestedLevel-=1;
 
         return result;
