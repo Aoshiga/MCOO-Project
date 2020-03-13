@@ -1,5 +1,5 @@
 package expression;
-import Visitors.Evaluateur.Verificateur.EvaluateurVisiteur;
+import Visitors.Evaluateur.EvaluateurVisiteur;
 import Visitors.PrettyPrint.PrettyPrintVisitor;
 import Visitors.Verificateur.VerificateurVisiteur;
 

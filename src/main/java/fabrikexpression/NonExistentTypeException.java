@@ -1,9 +1,9 @@
 package fabrikexpression;
 
 
-public class NonExistantTypeException extends Exception {
+public class NonExistentTypeException extends Exception {
     private String type;
-    public NonExistantTypeException(String type) {
+    NonExistentTypeException(String type) {
         this.type = type;
     }
 

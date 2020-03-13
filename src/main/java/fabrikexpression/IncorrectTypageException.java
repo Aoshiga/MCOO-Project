@@ -1,19 +1,16 @@
 package fabrikexpression;
 
-
-import java.util.ArrayList;
-
 public class IncorrectTypageException extends Exception {
     private String type;
-    private String excpected;
+    private String expected;
+
     public IncorrectTypageException(String  type , String expected) {
         this.type = type;
-        this.excpected =expected;
-
+        this.expected =expected;
     }
-
+    
     public String toString(){
-        return this.type + " Dosen't match expected type : " + this.excpected;
+        return this.type + " Dosen't match expected type : " + this.expected;
     }
 
 }

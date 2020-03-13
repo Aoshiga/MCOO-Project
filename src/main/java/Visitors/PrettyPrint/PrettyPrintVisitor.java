@@ -5,26 +5,26 @@ import expression.Appartient;
 import expression.Inclus;
 import expression.InclusEgal;
 
-public interface PrettyPrintVisitor {
-     public Object visit(Entier n) ;
-     public Object visit(Appartient n);
-     public Object visit(Booleen n) ;
-     public Object visit(Card n) ;
-     public Object visit(Different n) ;
-     public Object visit(Moins n) ;
-     public Object visit(OuLogique n) ;
-     public Object visit(Egal n) ;
-     public Object visit(EnsembleEnExtension n) ;
-     public Object visit(EtLogique n) ;
-     public Object visit(IlExiste n) ;
-     public Object visit(Inclus n) ;
-     public Object visit(InclusEgal n) ;
-     public Object visit(Inferieur n) ;
-     public Object visit(InferieurEgal n) ;
-     public Object visit(Litteral n) ;
-     public Object visit(NonLogique n) ;
-     public Object visit(Plus n) ;
-     public Object visit(PourTout n) ;
-     public Object visit(Superieur n) ;
-     public Object visit(SuperieurEgal n) ;
+ public interface PrettyPrintVisitor {
+      Object visit(Entier n) ;
+      Object visit(Appartient n);
+      Object visit(Booleen n) ;
+      Object visit(Card n) ;
+      Object visit(Different n) ;
+      Object visit(Moins n) ;
+      Object visit(OuLogique n) ;
+      Object visit(Egal n) ;
+      Object visit(EnsembleEnExtension n) ;
+      Object visit(EtLogique n) ;
+      Object visit(IlExiste n) ;
+      Object visit(Inclus n) ;
+      Object visit(InclusEgal n) ;
+      Object visit(Inferieur n) ;
+      Object visit(InferieurEgal n) ;
+      Object visit(Litteral n) ;
+      Object visit(NonLogique n) ;
+      Object visit(Plus n) ;
+      Object visit(PourTout n) ;
+      Object visit(Superieur n) ;
+      Object visit(SuperieurEgal n) ;
 }

@@ -32,9 +32,7 @@ public class ExprFactory {
             }
             return e;
         }catch (ClassNotFoundException ex){
-            throw new NonExistantTypeException(type);
-        }catch (IncorrectTypageException ex){
-            throw ex;
+            throw new NonExistentTypeException(type);
         }
     }
 
@@ -49,7 +47,7 @@ public class ExprFactory {
             }
             return e;
         }catch (ClassNotFoundException ex){
-                throw new NonExistantTypeException(type);
+                throw new NonExistentTypeException(type);
         }
     }
 

@@ -1,4 +1,4 @@
-package Visitors.Evaluateur.Verificateur;
+package Visitors.Evaluateur;
 
 import Visitors.PrettyPrint.PrettyPrintInterpreter;
 import Visitors.Verificateur.VerificateurInterpreteur;

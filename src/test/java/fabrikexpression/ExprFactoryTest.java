@@ -6,7 +6,7 @@ import org.junit.Test;
 public class ExprFactoryTest {
 
 
-    @Test(expected = NonExistantTypeException.class)
+    @Test(expected = NonExistentTypeException.class)
     public void makeLeafWrongClassName() throws Exception{
         ExprFactory f = ExprFactory.getInstance();
         Expression tmp = f.makeLeaf("dsd", 1);
@@ -23,7 +23,7 @@ public class ExprFactoryTest {
         Expression integer = f.makeLeaf("Litteral", 1);
     }
 
-    @Test(expected = NonExistantTypeException.class)
+    @Test(expected = NonExistentTypeException.class)
     public void makeNodeWrongClassName() throws Exception{
         ExprFactory f = ExprFactory.getInstance();
         Expression tmp = f.makeLeaf("dsd", 1);

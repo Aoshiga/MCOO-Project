@@ -8,8 +8,4 @@ public abstract class NonTerminal extends Expression {
         son.add(expr);
     }
 
-    public void remove(Expression expr){
-        son.remove(expr);
-    }
-
 }
