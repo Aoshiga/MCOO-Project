@@ -1,4 +1,3 @@
-import Visitors.PrettyPrint.PrettyPrintInterpreter;
 import expression.Expression;
 import fabrikexpression.ExprFactory;
 
@@ -9,15 +8,8 @@ public class testPrettyPrint {
 
         ExprFactory f = ExprFactory.getInstance();
         try {
-            Expression integer = f.makeLeaf("Entier", 1);
-            Expression falseBoolean = f.makeLeaf("Booleen", false);
-            PrettyPrintInterpreter ppv = new PrettyPrintInterpreter();
-
-            Expression plus1 =  f.makeNode("Plus", falseBoolean, integer);
-            System.out.println(plus1.accept(ppv));
-
-
-
+            Expression litteral = f.makeLeaf("Litteral", 1);
+            Expression integer = f.makeLeaf("dsd", 1);
 
         }catch (Exception ex){
             System.out.println(ex.toString());

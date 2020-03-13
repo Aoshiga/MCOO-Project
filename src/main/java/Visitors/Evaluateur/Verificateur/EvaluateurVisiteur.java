@@ -2,26 +2,30 @@ package Visitors.Evaluateur.Verificateur;
 
 import expression.*;
 
+import java.util.HashMap;
+
 public interface EvaluateurVisiteur {
-     public Object visit(Entier n) ;
-     public Object visit(Appartient n);
-     public Object visit(Booleen n) ;
-     public Object visit(Card n) ;
-     public Object visit(Different n) ;
-     public Object visit(Moins n) ;
-     public Object visit(OuLogique n) ;
-     public Object visit(Egal n) ;
-     public Object visit(EnsembleEnExtension n) ;
-     public Object visit(EtLogique n) ;
-     public Object visit(IlExiste n) ;
-     public Object visit(Inclus n) ;
-     public Object visit(InclusEgal n) ;
-     public Object visit(Inferieur n) ;
-     public Object visit(InferieurEgal n) ;
-     public Object visit(Litteral n) ;
-     public Object visit(NonLogique n) ;
-     public Object visit(Plus n) ;
-     public Object visit(PourTout n) ;
-     public Object visit(Superieur n) ;
-     public Object visit(SuperieurEgal n) ;
+     public HashMap<Litteral, Object> getVariables();
+     public void clear();
+          public Object visit(Entier input) ;
+     public Object visit(Appartient input);
+     public Object visit(Booleen input) ;
+     public Object visit(Card input) ;
+     public Object visit(Different input) ;
+     public Object visit(Moins input) ;
+     public Object visit(OuLogique input) ;
+     public Object visit(Egal input) ;
+     public Object visit(EnsembleEnExtension input) ;
+     public Object visit(EtLogique input) ;
+     public Object visit(IlExiste input) ;
+     public Object visit(Inclus input) ;
+     public Object visit(InclusEgal input) ;
+     public Object visit(Inferieur input) ;
+     public Object visit(InferieurEgal input) ;
+     public Object visit(Litteral input) ;
+     public Object visit(NonLogique input) ;
+     public Object visit(Plus input) ;
+     public Object visit(PourTout input) ;
+     public Object visit(Superieur input) ;
+     public Object visit(SuperieurEgal input) ;
 }
